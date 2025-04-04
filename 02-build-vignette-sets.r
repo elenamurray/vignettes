@@ -103,7 +103,7 @@ deck_combinations <- expand.grid(
 
 # Generate image paths and Qualtrics links
 generate_link <- function(scenario, vig_id) {
-  paste0("https://github.com/elenamurray/vignettes", scenario, "/", vig_id, ".jpg")
+  paste0("https://github.com/elenamurray/vignettes/blob/main/vignettes_images", "/", vig_id, ".png")
 }
 
 deck_combinations <- deck_combinations %>%
@@ -121,11 +121,6 @@ deck_combinations <- deck_combinations %>%
 deck_combinations <- deck_combinations %>%
   select(deck_id, park, park_image, park_link, shopping, shopping_image, shopping_link, stadium, stadium_image, stadium_link)
 
-#export
-save(deck_combinations,
-     file = "vignettes/deck_vignette_list.RDa")
-
-
 ### set up Qualtrics image links deck spreadsheet  -----------------------------------------
 
 # Transform the deck_combinations dataframe
@@ -139,13 +134,12 @@ qualtrics_links_df <- deck_combinations %>%
 
 # Save the transformed dataframe to Excel
 #export
-save(deck_combinations,
-     file = "vignettes/deck_vignette_list.xlsx")
+write_xlsx(qualtrics_links_df, "vignettes/deck_vignette_list.xlsx")
 
-write_xlsx(qualtrics_links_df, "vignettes/rdata/qualtrics_links_flat.xlsx")
+#shorter test version
+write_xlsx(head(qualtrics_links_df, 150), "vignettes/deck_vignette_list_150.xlsx")
 
-# Display the first few rows to confirm
-print(head(qualtrics_links_df))
+
 
 
 
