@@ -22,12 +22,12 @@ str_wrap_string <- function(string, width = 65) {
 
 #Function to create vignette text for each scenario
 import_vignettes_content <- function(scenario = "park") {
-  vignettes_content_df <- read_xlsx("messages/test_r_messages.xlsx", sheet = paste0("scenario_", scenario))
+  vignettes_content_df <- read_xlsx("messages/vignettes_content.xlsx", sheet = paste0("scenario_", scenario))
   vignettes_content_df$scenario <- scenario
-  vignettes_content_df$title_message_split <- map_chr(vignettes_content_df$title, str_wrap_string, width = 35)
-  vignettes_content_df$actor_message_split <- map_chr(vignettes_content_df$actor_message, str_wrap_string, width = 35)
-  vignettes_content_df$type_message_split <- map_chr(vignettes_content_df$type_message, str_wrap_string, width = 35)
-  vignettes_content_df$scale_message_split <- map_chr(vignettes_content_df$scale_message, str_wrap_string, width = 35)
+  vignettes_content_df$title_message_split <- map_chr(vignettes_content_df$title, str_wrap_string, width = 40)
+  vignettes_content_df$actor_message_split <- map_chr(vignettes_content_df$actor_message, str_wrap_string, width = 40)
+  vignettes_content_df$type_message_split <- map_chr(vignettes_content_df$type_message, str_wrap_string, width = 42)
+  vignettes_content_df$scale_message_split <- map_chr(vignettes_content_df$scale_message, str_wrap_string, width = 42)
   
   vignettes_content_df$title_lines <- str_count(vignettes_content_df$title_message_split, fixed("\n")) + 1
   

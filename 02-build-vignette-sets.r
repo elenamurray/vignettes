@@ -23,7 +23,7 @@ stadium_img <- image_read("images/stadium.png")
 
 ## load prepared vignette data -----------------------
 
-load("vignettes/rdata/vignettes_df.RData")
+load("vignettes/vignettes_df.RData")
 
 #vignettes_universe df already contains all possible combinations of vignettes (8 per scenario)
 
@@ -41,7 +41,6 @@ create_vignette_images <- function(df, output_dir = "vignettes_images") {
     # Extract row data
     scenario <- df$scenario[i]
     vig_id <- df$vig_id[i]
-    title <- df$title[i]
     actor_message <- df$actor_message_split[i]
     type_message <- df$type_message_split[i]
     scale_message <- df$scale_message_split[i]
@@ -51,27 +50,30 @@ create_vignette_images <- function(df, output_dir = "vignettes_images") {
                        park = park_img,
                        shopping = shopping_img,
                        stadium = stadium_img)
-    
-    # Define specific text locations for each scenario
-    text_locations <- list(
-      park = "+500+180",       # Position for park image
-      shopping = "+650+190",   # Position for shopping image
-      stadium = "+500+200"     # Position for stadium image
-    )
-    
-    # Get the specific text location for the current scenario
-    text_location <- text_locations[[scenario]]
 
     
     # Compose the text for the vignette
-    vignette_text <- paste(title, "\n",
-                           actor_message, "\n",
+    vignette_text <- paste(actor_message, "\n",
                            type_message, "\n",
                            scale_message, sep = "")
     
-    # Create the image with annotated text
+    # Define vertical spacing between lines (in pixels)
+    line_spacing <- 50
+    
+    # Apply annotations one by one with spacing
     vignette_img <- base_img %>%
-      image_annotate(vignette_text, size = 32, color = "black", location = text_location, font = "Helvetica")
+      # Line 1: Bold actor message
+      image_annotate(actor_message, size = 28, color = "black",
+                     location = "+502+290",
+                     font = "Arial Rounded MT Bold") %>%
+      # Line 2: Type message
+      image_annotate(type_message, size = 28, color = "black",
+                     location = "+502+410",
+                     font = "Arial") %>%
+      # Line 3: Scale message
+      image_annotate(scale_message, size = 28, color = "black",
+                     location = "+502+650",
+                     font = "Arial")
     
     # Create a unique file name
     file_name <- paste0(output_dir, "/", vig_id, ".png")
@@ -103,14 +105,16 @@ deck_combinations <- expand.grid(
 
 # Generate image paths and Qualtrics links
 generate_link <- function(scenario, vig_id) {
-  paste0("https://github.com/elenamurray/vignettes/blob/main/vignettes_images", "/", vig_id, ".png")
+  paste0("https://raw.githubusercontent.com/elenamurray/vignettes/refs/heads/main/vignettes_images", "/", vig_id, ".png")
 }
 
+
+#Create all possible combinations of text+images 
 deck_combinations <- deck_combinations %>%
   mutate(
-    park_image = paste0(park, ".jpg"),
-    shopping_image = paste0(shopping, ".jpg"),
-    stadium_image = paste0(stadium, ".jpg"),
+    park_image = paste0(park, ".png"),
+    shopping_image = paste0(shopping, ".png"),
+    stadium_image = paste0(stadium, ".png"),
     park_link = generate_link("park", park),
     shopping_link = generate_link("shopping", shopping),
     stadium_link = generate_link("stadium", stadium),
@@ -145,9 +149,10 @@ write_xlsx(head(qualtrics_links_df, 150), "vignettes/deck_vignette_list_150.xlsx
 
 
 
+magick_fonts()
+magick_options()
 
-
-
+magick::font_config()
 
 
 
