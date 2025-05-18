@@ -1,6 +1,5 @@
 
 ## load packages and functions ------------------
-
 library(tidyverse)
 library(magrittr)
 library(readxl)
@@ -23,13 +22,13 @@ shopping_img <- image_read("images/shopping.png")
 stadium_img <- image_read("images/stadium.png")
 
 
-## load prepared vignette data -----------------------
-
+### load prepared vignette data -----------------------
 load("vignettes/vignettes_df.RData")
 
-#vignettes_universe df already contains all possible combinations of vignettes (8 per scenario)
+# vignettes_universe df already contains all possible combinations of vignettes (8 per scenario)
 
-#Add text to images 
+###Add text to images------------------------------------
+
 # Function to create vignette images
 create_vignette_images <- function(df, output_dir = "vignettes_images") {
   
@@ -151,8 +150,10 @@ vigs_clean <- vignettes_universe %>%
   rename(vignette_id = vig_id)
 
 # Long format for deck lookups
-decks_long_2 <- deck_combinations %>%
-  pivot_longer(cols = c(park, shopping, stadium))
+decks_long <- deck_combinations %>%
+  pivot_longer(cols = c(park, shopping, stadium)) %>% 
+  rename(vignette_id = value) %>% 
+  rename(setting = name)
 
 #Merge vignette attributes into deck data
 decks_with_attrs <- decks_long %>%
@@ -170,7 +171,9 @@ design_matrix <- decks_with_attrs %>%
   select(deck_id, park_vignette_id, park_actor, park_type, park_scale, shopping_vignette_id, shopping_actor, 
          shopping_type, shopping_scale, stadium_vignette_id, stadium_actor, stadium_type, stadium_scale)
 
-
+## Save this as a file for next steps 
+save(design_matrix, 
+     file = "vignettes/design_matrix.RData")
 
 #---------------------
 #Try d-efficient sampling to get 150 deck combinations
